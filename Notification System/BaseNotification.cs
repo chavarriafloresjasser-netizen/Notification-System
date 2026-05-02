@@ -9,13 +9,28 @@
     private readonly TimeSpan TimeBetweenSends = TimeSpan.FromMinutes(1); // Tiempo mínimo entre envíos
 
     //Protected methods
+    /// <summary>
+    /// Metodo creado para que las clases hijas puedan implementarsu propia forma de mostrar el mensaje, ya que cada tipo de notificación puede tener un formato diferente.
+    /// </summary>
+    /// <returns>Formato del mensaje</returns>
     protected abstract string MessageDisplay();
     //Virtual methods
+    /// <summary>
+    /// Despliega información relevante sobre la notificación, como el destinatario, la cantidad de mensajes enviados y la fecha del último mensaje enviado. Este método puede ser sobrescrito por las clases hijas para mostrar información adicional o diferente según el tipo de notificación.
+    /// </summary>
+    /// <returns>Información de la notificación</returns>
     virtual protected string DisplayInformation()
     {
         return $"Destinatario: {Recipient} || Cantidad de mensajes enviados {CounterMenssage}|| Ultimo mensaje enviado {LastSend}";
     }
     //Public methods
+    /// <summary>
+    /// Valida que el mensaje y el destinatario no estén vacíos, que la fecha de envío no sea en el pasado y que se haya respetado el tiempo mínimo entre envíos. Si alguna de estas condiciones no se cumple, se lanzará una excepción con un mensaje de error específico. Si todas las validaciones son exitosas, el método devolverá true, indicando que la notificación es válida para ser enviada.
+    /// </summary>
+    /// <returns>True si la notificación es válida para ser enviada</returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="InvalidOperationException"></exception>
     public bool Validate()
     {
         if (string.IsNullOrWhiteSpace(Message) || string.IsNullOrWhiteSpace(Recipient))
@@ -30,6 +45,10 @@
         return true;
     }
 
+    /// <summary>
+    /// Envia la notificacion si las ultimas validaciones fueron exitosas, actualiza el estado de la notificación a "enviada", registra la fecha y hora del envío, y devuelve un mensaje indicando que la notificación ha sido enviada al destinatario. Si las validaciones no son exitosas, devuelve un mensaje indicando que no se pudo enviar la notificación.
+    /// </summary>
+    /// <returns>Mensaje indicando el resultado del envío de la notificación</returns>
     public string SendNotification()
     {
         if (Validate())
