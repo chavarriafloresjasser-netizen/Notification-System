@@ -8,6 +8,21 @@
     private DateTime _sendingTime;
     private readonly TimeSpan TimeBetweenSends = TimeSpan.FromMinutes(1); // Tiempo mínimo entre envíos
 
+    //Constructor
+    /// <summary>
+    /// Constructor de la clase BaseNotification, que inicializa el destinatario, el mensaje, el estado de la notificación, el contador de mensajes enviados y la fecha del último envío. El estado se establece inicialmente como "no enviado", el contador de mensajes se inicia en cero y la fecha del último envío se establece en una fecha mínima para indicar que no se ha enviado ningún mensaje aún.
+    /// </summary>
+    /// <param name="recipient">El destinatario de la notificación</param>
+    /// <param name="message">El mensaje de la notificación</param>
+    public BaseNotification(string recipient, string message)
+    {
+        Recipient = recipient;
+        Message = message;
+        Status = false;
+        CounterMenssage = 0;
+        LastSend = DateTime.MinValue; // Inicializa con una fecha mínima para indicar que no se ha enviado ningún mensaje aún
+    }
+
     //Protected methods
     /// <summary>
     /// Metodo creado para que todas las clases hijas puedan validar el tipo de destinatario, ya que todos los tipos de notificaciones contiene diferentes formas para llamar al usuariio, ya sea por correo o por numero
@@ -19,6 +34,11 @@
     /// </summary>
     /// <returns>Formato del mensaje</returns>
     protected abstract string MessageDisplay();
+    /// <summary>
+    /// Metodo hecho para validar los tipos de mensajes, ya que cada tipo de notificación puede tener diferentes reglas para validar el mensaje, como por ejemplo, un correo electrónico puede requerir un formato específico, mientras que un mensaje de texto puede tener restricciones de longitud.
+    /// </summary>
+    /// <returns>Validación del mensaje</returns>
+    protected abstract string ValidateMessage();
     //Virtual methods
     /// <summary>
     /// Despliega información relevante sobre la notificación, como el destinatario, la cantidad de mensajes enviados y la fecha del último mensaje enviado. Este método puede ser sobrescrito por las clases hijas para mostrar información adicional o diferente según el tipo de notificación.
@@ -59,6 +79,7 @@
         if (Validate())
         {
             Status = true;
+            CounterMenssage++;
             LastSend = DateTime.Now;
             return $"Notificación enviada a {ValidateRecipient}";
         }
@@ -72,7 +93,7 @@
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("ERROR: El mensaje no puede quedar vacío.");
-            _message = value;
+            _message = value.Trim();
         }
     }
 
