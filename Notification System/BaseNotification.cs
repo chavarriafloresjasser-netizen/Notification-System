@@ -10,6 +10,11 @@
 
     //Protected methods
     /// <summary>
+    /// Metodo creado para que todas las clases hijas puedan validar el tipo de destinatario, ya que todos los tipos de notificaciones contiene diferentes formas para llamar al usuariio, ya sea por correo o por numero
+    /// </summary>
+    /// <returns>Validación del usuario</returns>
+    protected abstract string ValidateRecipient();
+    /// <summary>
     /// Metodo creado para que las clases hijas puedan implementarsu propia forma de mostrar el mensaje, ya que cada tipo de notificación puede tener un formato diferente.
     /// </summary>
     /// <returns>Formato del mensaje</returns>
@@ -21,7 +26,7 @@
     /// <returns>Información de la notificación</returns>
     virtual protected string DisplayInformation()
     {
-        return $"Destinatario: {Recipient} || Cantidad de mensajes enviados {CounterMenssage}|| Ultimo mensaje enviado {LastSend}";
+        return $"Destinatario: {ValidateRecipient} || Cantidad de mensajes enviados {CounterMenssage}|| Ultimo mensaje enviado {LastSend}";
     }
     //Public methods
     /// <summary>
@@ -33,7 +38,7 @@
     /// <exception cref="InvalidOperationException"></exception>
     public bool Validate()
     {
-        if (string.IsNullOrWhiteSpace(Message) || string.IsNullOrWhiteSpace(Recipient))
+        if (string.IsNullOrWhiteSpace(Message) || string.IsNullOrWhiteSpace(ValidateRecipient()))
             throw new ArgumentNullException ("ERROR: El mensaje y/o el destinatario no pueden quedar vacíos.");
         
         if(SendingTime < DateTime.Now)
@@ -55,7 +60,7 @@
         {
             Status = true;
             LastSend = DateTime.Now;
-            return $"Notificación enviada a {Recipient}";
+            return $"Notificación enviada a {ValidateRecipient}";
         }
         return "No se pudo enviar la notificación.";
     }
